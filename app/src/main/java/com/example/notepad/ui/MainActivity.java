@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private NoteViewModel vm;
     private NoteAdapter adapter;
     private List<Note> allNotes = new ArrayList<>();
+    private ActionMode actionMode;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,18 +59,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
 
-            @Override public void onDelete(Note n) {
-                vm.delete(n);
-                Snackbar.make(rv, "یادداشت حذف شد", Snackbar.LENGTH_LONG)
-                        .setAction("برگردان", v -> vm.insert(n)).show();
-            }
-
-            @Override public void onShare(Note n) {
-                Intent s = new Intent(Intent.ACTION_SEND);
-                s.setType("text/plain");
-                s.putExtra(Intent.EXTRA_SUBJECT, n.title);
-                s.putExtra(Intent.EXTRA_TEXT, n.title + "\n\n" + n.content);
-                startActivity(Intent.createChooser(s, "اشتراک‌گذاری یادداشت"));
+            @Override public void onSelectionChange(int count) {
+                if (count > 0) {
+                    if (actionMode == null) {
+                        actionMode = startSupportActionMode(actionModeCallback);
+                    }
+                    if (actionMode != null) actionMode.setTitle(count + " انتخاب");
+                } else if (actionMode != null) {
+                    actionMode.finish();
+                }
             }
         });
 
@@ -83,6 +82,42 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(rv);
     }
+
+    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_select, menu);
+            return true;
+        }
+        @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+        @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int id = item.getItemId();
+            if (id == R.id.action_delete) {
+                List<Note> sel = adapter.getSelected();
+                for (Note n : sel) vm.delete(n);
+                Snackbar.make(findViewById(R.id.recyclerNotes), "حذف شد", Snackbar.LENGTH_LONG)
+                        .setAction("برگردان", v -> { for (Note n : sel) vm.insert(n); }).show();
+                mode.finish();
+                return true;
+            } else if (id == R.id.action_share) {
+                List<Note> sel = adapter.getSelected();
+                StringBuilder sb = new StringBuilder();
+                for (Note n : sel) {
+                    sb.append(n.title).append("\n").append(n.content).append("\n\n");
+                }
+                Intent s = new Intent(Intent.ACTION_SEND);
+                s.setType("text/plain");
+                s.putExtra(Intent.EXTRA_TEXT, sb.toString().trim());
+                startActivity(Intent.createChooser(s, "اشتراک‌گذاری یادداشت‌ها"));
+                mode.finish();
+                return true;
+            }
+            return false;
+        }
+        @Override public void onDestroyActionMode(ActionMode mode) {
+            adapter.clearSelection();
+            actionMode = null;
+        }
+    };
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -154,5 +189,13 @@ public class MainActivity extends AppCompatActivity {
         // اگر کاربر در Settings فونت/سورت تغییر داد، سورت را دوباره اعمال کن
         vm.setSortMode(SettingsManager.getSortMode(this));
         adapter.notifyDataSetChanged();
+    }
+
+    @Override public void onBackPressed() {
+        if (actionMode != null) {
+            actionMode.finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
