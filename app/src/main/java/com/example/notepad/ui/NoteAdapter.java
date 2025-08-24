@@ -3,7 +3,7 @@ package com.example.notepad.ui;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.*;
-import android.widget.PopupMenu;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -11,32 +11,39 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.notepad.R;
 import com.example.notepad.data.Note;
+import com.google.android.material.card.MaterialCardView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
 
-    public interface OnAction {
+    public interface Callback {
         void onEdit(Note n);
-        void onDelete(Note n);
-        void onShare(Note n);
+        void onSelectionChanged(int count);
     }
 
-    private OnAction onAction;
+    private Callback callback;
     private final Context ctx;
+    private boolean selectionMode = false;
+    private final Set<Long> selected = new HashSet<>();
 
     public NoteAdapter(Context ctx) {
         super(DIFF);
         this.ctx = ctx;
     }
 
-    public void setOnAction(OnAction a){ this.onAction = a; }
+    public void setCallback(Callback c){ this.callback = c; }
 
     private static final DiffUtil.ItemCallback<Note> DIFF = new DiffUtil.ItemCallback<Note>() {
         @Override public boolean areItemsTheSame(@NonNull Note o, @NonNull Note n) { return o.id == n.id; }
         @Override public boolean areContentsTheSame(@NonNull Note o, @NonNull Note n) {
-            return o.title.equals(n.title) && o.content.equals(n.content) && o.createdAt==n.createdAt && o.updatedAt==n.updatedAt;
+            return o.title.equals(n.title) && o.content.equals(n.content)
+                    && o.createdAt==n.createdAt && o.updatedAt==n.updatedAt
+                    && o.color == n.color;
         }
     };
 
@@ -61,40 +68,78 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
         h.tvContent.setTextSize(sp);
         h.tvDate.setTextSize(Math.max(sp - 2, 10));
 
-        String fam = SettingsManager.getFontFamily(ctx);
-        Typeface tf = Typeface.SANS_SERIF;
-        if ("serif".equals(fam)) tf = Typeface.SERIF;
-        else if ("monospace".equals(fam)) tf = Typeface.MONOSPACE;
+        Typeface tf = SettingsManager.getTypeface(ctx);
         h.tvTitle.setTypeface(tf);
         h.tvContent.setTypeface(tf);
         h.tvDate.setTypeface(tf);
 
-        h.itemView.setOnClickListener(v -> { if (onAction != null) onAction.onEdit(note); });
+        ((MaterialCardView) h.itemView).setCardBackgroundColor(note.color);
+
+        h.cb.setVisibility(selectionMode ? View.VISIBLE : View.GONE);
+        h.cb.setChecked(selected.contains(note.id));
+
+        h.itemView.setOnClickListener(v -> {
+            if (selectionMode) {
+                toggleSelection(note.id);
+            } else if (callback != null) {
+                callback.onEdit(note);
+            }
+        });
 
         h.itemView.setOnLongClickListener(v -> {
-            PopupMenu m = new PopupMenu(ctx, v);
-            m.getMenu().add("اشتراک‌گذاری");
-            m.getMenu().add("حذف");
-            m.setOnMenuItemClickListener(item -> {
-                if ("حذف".contentEquals(item.getTitle())) {
-                    if (onAction != null) onAction.onDelete(note);
-                } else {
-                    if (onAction != null) onAction.onShare(note);
-                }
+            if (!selectionMode) {
+                selectionMode = true;
+                selected.add(note.id);
+                notifyDataSetChanged();
+                if (callback != null) callback.onSelectionChanged(selected.size());
                 return true;
-            });
-            m.show();
-            return true;
+            }
+            return false;
         });
+
+        h.cb.setOnClickListener(v -> toggleSelection(note.id));
     }
+
+    private void toggleSelection(long id) {
+        if (selected.contains(id)) {
+            selected.remove(id);
+            if (selected.isEmpty()) {
+                selectionMode = false;
+            }
+        } else {
+            selected.add(id);
+        }
+        notifyDataSetChanged();
+        if (callback != null) callback.onSelectionChanged(selected.size());
+    }
+
+    public void clearSelection() {
+        selectionMode = false;
+        selected.clear();
+        notifyDataSetChanged();
+        if (callback != null) callback.onSelectionChanged(0);
+    }
+
+    public List<Note> getSelectedNotes() {
+        List<Note> list = new java.util.ArrayList<>();
+        for (int i = 0; i < getItemCount(); i++) {
+            Note n = getItem(i);
+            if (selected.contains(n.id)) list.add(n);
+        }
+        return list;
+    }
+
+    public boolean isSelectionMode(){ return selectionMode; }
 
     static class VH extends RecyclerView.ViewHolder {
         TextView tvTitle, tvContent, tvDate;
+        CheckBox cb;
         VH(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvContent = itemView.findViewById(R.id.tvContent);
             tvDate = itemView.findViewById(R.id.tvDate);
+            cb = itemView.findViewById(R.id.cbSelect);
         }
     }
 
