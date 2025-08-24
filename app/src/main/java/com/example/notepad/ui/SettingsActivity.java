@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView;
+
+import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.notepad.R;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -35,12 +38,25 @@ public class SettingsActivity extends AppCompatActivity {
         sb.setProgress(SettingsManager.getFontSizeSp(this));
         tvPreview.setTextSize(sb.getProgress());
 
-        String[] families = {"sans","serif","monospace"};
-        spFamily.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, families));
+        String[] labels = {"IRANSansDN_Fa_Num","Tahrir_Bold","IRANSansDN_FaNum_Bold","Anjoman_SemiBold","javan","IRANYekanBold"};
+        String[] families = {"iransansdn_fa_num","tahrir_bold","iransansdn_fanum_bold","anjoman_semibold","javan","iranyekan_bold"};
+        spFamily.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, labels));
         String curFamily = SettingsManager.getFontFamily(this);
+        int sel = 0;
         for (int i = 0; i < families.length; i++) {
-            if (families[i].equals(curFamily)) spFamily.setSelection(i);
+            if (families[i].equals(curFamily)) { sel = i; break; }
         }
+        spFamily.setSelection(sel);
+        int fontId = getResources().getIdentifier(families[sel], "font", getPackageName());
+        if(fontId != 0) tvPreview.setTypeface(ResourcesCompat.getFont(this, fontId));
+
+        spFamily.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+                int fid = getResources().getIdentifier(families[position], "font", getPackageName());
+                if(fid != 0) tvPreview.setTypeface(ResourcesCompat.getFont(SettingsActivity.this, fid));
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) { }
+        });
 
         sortMode = SettingsManager.getSortMode(this);
         btnSort.setText("created".equals(sortMode) ? "زمان ساخت" : "آخرین ویرایش");
@@ -56,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> {
             SettingsManager.setFontSizeSp(this, sb.getProgress());
-            SettingsManager.setFontFamily(this, (String) spFamily.getSelectedItem());
+            SettingsManager.setFontFamily(this, families[spFamily.getSelectedItemPosition()]);
             SettingsManager.setSortMode(this, sortMode);
             finish();
         });

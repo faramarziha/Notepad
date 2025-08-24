@@ -60,10 +60,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
 
     private void applyFontSettings() {
         int sp = SettingsManager.getFontSizeSp(this);
-        String fam = SettingsManager.getFontFamily(this);
-        Typeface tf = Typeface.SANS_SERIF;
-        if ("serif".equals(fam)) tf = Typeface.SERIF;
-        else if ("monospace".equals(fam)) tf = Typeface.MONOSPACE;
+        Typeface tf = SettingsManager.getTypeface(this);
         etTitle.setTextSize(sp + 2);
         etContent.setTextSize(sp);
         etTitle.setTypeface(tf);

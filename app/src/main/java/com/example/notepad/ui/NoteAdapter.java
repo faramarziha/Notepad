@@ -64,10 +64,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
         h.tvContent.setTextSize(sp);
         h.tvDate.setTextSize(Math.max(sp - 2, 10));
 
-        String fam = SettingsManager.getFontFamily(ctx);
-        Typeface tf = Typeface.SANS_SERIF;
-        if ("serif".equals(fam)) tf = Typeface.SERIF;
-        else if ("monospace".equals(fam)) tf = Typeface.MONOSPACE;
+        Typeface tf = SettingsManager.getTypeface(ctx);
         h.tvTitle.setTypeface(tf);
         h.tvContent.setTypeface(tf);
         h.tvDate.setTypeface(tf);
