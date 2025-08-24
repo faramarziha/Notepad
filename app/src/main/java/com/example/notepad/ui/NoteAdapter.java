@@ -29,7 +29,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
     private Callback callback;
     private final Context ctx;
     private boolean selectionMode = false;
-    private final Set<Long> selected = new HashSet<>();
+    private final Set<Integer> selected = new HashSet<>();
 
     public NoteAdapter(Context ctx) {
         super(DIFF);
@@ -100,7 +100,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
         h.cb.setOnClickListener(v -> toggleSelection(note.id));
     }
 
-    private void toggleSelection(long id) {
+    private void toggleSelection(int id) {
         if (selected.contains(id)) {
             selected.remove(id);
             if (selected.isEmpty()) {
@@ -130,6 +130,16 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
     }
 
     public boolean isSelectionMode(){ return selectionMode; }
+
+    public void selectAll() {
+        selectionMode = true;
+        selected.clear();
+        for (int i = 0; i < getItemCount(); i++) {
+            selected.add(getItem(i).id);
+        }
+        notifyDataSetChanged();
+        if (callback != null) callback.onSelectionChanged(selected.size());
+    }
 
     static class VH extends RecyclerView.ViewHolder {
         TextView tvTitle, tvContent, tvDate;

@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ActionMode;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -24,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private NoteViewModel vm;
     private NoteAdapter adapter;
     private List<Note> allNotes = new ArrayList<>();
-    private ActionMode actionMode;
+    private LinearLayout selectionBar;
+    private TextView tvSelected;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.recyclerNotes);
         FloatingActionButton fab = findViewById(R.id.fabAdd);
+        selectionBar = findViewById(R.id.selectionBar);
+        tvSelected = findViewById(R.id.tvSelected);
+        ImageButton btnDelete = findViewById(R.id.btnDelete);
+        ImageButton btnShare = findViewById(R.id.btnShare);
+        ImageButton btnSelectAll = findViewById(R.id.btnSelectAll);
 
         adapter = new NoteAdapter(this);
         rv.setAdapter(adapter);
@@ -46,6 +56,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(v -> startActivity(new Intent(this, AddEditNoteActivity.class)));
+
+        btnDelete.setOnClickListener(v -> {
+            for (Note n : adapter.getSelectedNotes()) {
+                vm.delete(n);
+            }
+            adapter.clearSelection();
+        });
+        btnShare.setOnClickListener(v -> {
+            StringBuilder sb = new StringBuilder();
+            for (Note n : adapter.getSelectedNotes()) {
+                sb.append(n.title).append("\n").append(n.content).append("\n\n");
+            }
+            Intent s = new Intent(Intent.ACTION_SEND);
+            s.setType("text/plain");
+            s.putExtra(Intent.EXTRA_TEXT, sb.toString().trim());
+            startActivity(Intent.createChooser(s, "اشتراک‌گذاری یادداشت‌ها"));
+            adapter.clearSelection();
+        });
+        btnSelectAll.setOnClickListener(v -> adapter.selectAll());
 
         adapter.setCallback(new NoteAdapter.Callback() {
             @Override public void onEdit(Note n) {
@@ -60,14 +89,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override public void onSelectionChanged(int count) {
-                if (count == 0) {
-                    if (actionMode != null) actionMode.finish();
-                } else {
-                    if (actionMode == null) {
-                        actionMode = startSupportActionMode(actionModeCallback);
-                    }
-                    if (actionMode != null) actionMode.setTitle(count + " انتخاب شده");
-                }
+                tvSelected.setText(count + " انتخاب شده");
+                selectionBar.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -113,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_sort) {
             pickSort();
             return true;
-        } else if (id == R.id.action_delete_all) {
-            vm.deleteAll();
+        } else if (id == R.id.action_creator) {
+            Toast.makeText(this, "پیروزی", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
@@ -153,44 +176,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override protected void onResume() {
         super.onResume();
-        // اگر کاربر در Settings فونت/سورت تغییر داد، سورت را دوباره اعمال کن
         vm.setSortMode(SettingsManager.getSortMode(this));
         adapter.notifyDataSetChanged();
     }
 
-    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
-        @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            getMenuInflater().inflate(R.menu.menu_selection, menu);
-            return true;
-        }
-
-        @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
-
-        @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            if (item.getItemId() == R.id.action_delete) {
-                for (Note n : adapter.getSelectedNotes()) {
-                    vm.delete(n);
-                }
-                mode.finish();
-                return true;
-            } else if (item.getItemId() == R.id.action_share) {
-                StringBuilder sb = new StringBuilder();
-                for (Note n : adapter.getSelectedNotes()) {
-                    sb.append(n.title).append("\n").append(n.content).append("\n\n");
-                }
-                Intent s = new Intent(Intent.ACTION_SEND);
-                s.setType("text/plain");
-                s.putExtra(Intent.EXTRA_TEXT, sb.toString().trim());
-                startActivity(Intent.createChooser(s, "اشتراک‌گذاری یادداشت‌ها"));
-                mode.finish();
-                return true;
-            }
-            return false;
-        }
-
-        @Override public void onDestroyActionMode(ActionMode mode) {
+    @Override public void onBackPressed() {
+        if (adapter.isSelectionMode()) {
             adapter.clearSelection();
-            actionMode = null;
+        } else {
+            super.onBackPressed();
         }
-    };
+    }
 }

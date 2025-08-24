@@ -14,13 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/cbSelect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:visibility="gone"/>
-
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
@@ -53,5 +46,12 @@
                 android:alpha="0.6"
                 android:text="yyyy/MM/dd HH:mm"/>
         </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cbSelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

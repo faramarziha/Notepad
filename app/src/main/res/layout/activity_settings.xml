@@ -15,7 +15,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:padding="16dp"
@@ -50,26 +51,13 @@
                 android:id="@+id/spFamily"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="مرتب‌سازی"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
-
-            <Button
-                android:id="@+id/btnSort"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="زمان ساخت" />
-
-            <Button
-                android:id="@+id/btnSave"
-                android:text="ذخیره"
-                android:layout_marginTop="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:text="ذخیره"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
