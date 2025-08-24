@@ -58,21 +58,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" />
 
-            <RadioGroup
+            <Button
+                android:id="@+id/btnSort"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:id="@+id/rbCreated"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="زمان ساخت" />
-                <RadioButton
-                    android:id="@+id/rbUpdated"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="آخرین ویرایش" />
-            </RadioGroup>
+                android:layout_marginTop="8dp"
+                android:text="زمان ساخت" />
 
             <Button
                 android:id="@+id/btnSave"

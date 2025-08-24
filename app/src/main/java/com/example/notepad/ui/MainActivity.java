@@ -1,5 +1,6 @@
 package com.example.notepad.ui;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -107,13 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_sort_created) {
-            SettingsManager.setSortMode(this, "created");
-            vm.setSortMode("created");
-            return true;
-        } else if (id == R.id.action_sort_updated) {
-            SettingsManager.setSortMode(this, "updated");
-            vm.setSortMode("updated");
+        if (id == R.id.action_sort) {
+            pickSort();
             return true;
         } else if (id == R.id.action_delete_all) {
             vm.deleteAll();
@@ -123,6 +119,17 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void pickSort() {
+        String[] names = {"زمان ساخت", "آخرین ویرایش"};
+        String[] modes = {"created", "updated"};
+        new AlertDialog.Builder(this)
+                .setTitle("مرتب‌سازی براساس")
+                .setItems(names, (d, which) -> {
+                    SettingsManager.setSortMode(this, modes[which]);
+                    vm.setSortMode(modes[which]);
+                }).show();
     }
 
     private void filterNotes(String q) {
