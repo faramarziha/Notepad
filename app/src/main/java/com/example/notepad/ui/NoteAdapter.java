@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.notepad.R;
 import com.example.notepad.data.Note;
+import com.google.android.material.card.MaterialCardView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -36,7 +37,9 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
     private static final DiffUtil.ItemCallback<Note> DIFF = new DiffUtil.ItemCallback<Note>() {
         @Override public boolean areItemsTheSame(@NonNull Note o, @NonNull Note n) { return o.id == n.id; }
         @Override public boolean areContentsTheSame(@NonNull Note o, @NonNull Note n) {
-            return o.title.equals(n.title) && o.content.equals(n.content) && o.createdAt==n.createdAt && o.updatedAt==n.updatedAt;
+            return o.title.equals(n.title) && o.content.equals(n.content)
+                    && o.createdAt==n.createdAt && o.updatedAt==n.updatedAt
+                    && o.color == n.color;
         }
     };
 
@@ -68,6 +71,8 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
         h.tvTitle.setTypeface(tf);
         h.tvContent.setTypeface(tf);
         h.tvDate.setTypeface(tf);
+
+        ((MaterialCardView) h.itemView).setCardBackgroundColor(note.color);
 
         h.itemView.setOnClickListener(v -> { if (onAction != null) onAction.onEdit(note); });
 

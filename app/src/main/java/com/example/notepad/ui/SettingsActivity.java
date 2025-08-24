@@ -9,12 +9,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.notepad.R;
+import com.google.android.material.appbar.MaterialToolbar;
 
 public class SettingsActivity extends AppCompatActivity {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        MaterialToolbar tb = findViewById(R.id.toolbar);
+        setSupportActionBar(tb);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SeekBar sb = findViewById(R.id.seekFont);
         TextView tvPreview = findViewById(R.id.tvPreview);
@@ -52,5 +57,10 @@ public class SettingsActivity extends AppCompatActivity {
             SettingsManager.setSortMode(this, rbCreated.isChecked() ? "created" : "updated");
             finish();
         });
+    }
+
+    @Override public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }

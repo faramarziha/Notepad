@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra("content", n.content);
                 i.putExtra("createdAt", n.createdAt);
                 i.putExtra("updatedAt", n.updatedAt);
+                i.putExtra("color", n.color);
                 startActivity(i);
             }
 

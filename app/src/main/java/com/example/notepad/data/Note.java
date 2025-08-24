@@ -15,12 +15,16 @@ public class Note {
     public long createdAt;
     public long updatedAt;
 
+    // رنگ پس‌زمینه یادداشت
+    public int color;
+
     public Note() {}
 
-    public Note(String title, String content, long createdAt, long updatedAt) {
+    public Note(String title, String content, long createdAt, long updatedAt, int color) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.color = color;
     }
 }
