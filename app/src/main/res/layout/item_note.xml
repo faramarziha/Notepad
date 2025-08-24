@@ -1,43 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_margin="8dp"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:layout_margin="8dp">
 
-    <LinearLayout
-        android:padding="14dp"
-        android:orientation="vertical"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:textStyle="bold"
-            android:textSize="18sp"
+        <LinearLayout
+            android:padding="14dp"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="عنوان"/>
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvContent"
-            android:layout_marginTop="6dp"
-            android:maxLines="3"
-            android:ellipsize="end"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="متن یادداشت"/>
+            <TextView
+                android:id="@+id/tvTitle"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="عنوان"/>
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:layout_marginTop="8dp"
-            android:alpha="0.6"
-            android:text="yyyy/MM/dd HH:mm"/>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_marginTop="6dp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="متن یادداشت"/>
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginTop="8dp"
+                android:alpha="0.6"
+                android:text="yyyy/MM/dd HH:mm"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <CheckBox
+        android:id="@+id/cbSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_margin="4dp"
+        android:visibility="gone"/>
+</FrameLayout>

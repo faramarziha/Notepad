@@ -1,43 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:padding="16dp" android:orientation="vertical"
-        android:layout_width="match_parent" android:layout_height="wrap_content">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp"
+        app:title="تنظیمات"
+        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetEnd="0dp" />
 
-        <TextView android:text="سایز فونت" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <SeekBar
-            android:id="@+id/seekFont"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:padding="16dp"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvPreview"
-            android:text="پیش‌نمایش متن"
-            android:layout_marginTop="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:text="سایز فونت"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <TextView android:text="خانواده فونت" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <Spinner
-            android:id="@+id/spFamily"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <SeekBar
+                android:id="@+id/seekFont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <TextView android:text="مرتب‌سازی" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <RadioGroup
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RadioButton android:id="@+id/rbCreated" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="زمان ساخت"/>
-            <RadioButton android:id="@+id/rbUpdated" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="آخرین ویرایش"/>
-        </RadioGroup>
+            <TextView
+                android:id="@+id/tvPreview"
+                android:text="پیش‌نمایش متن"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btnSave"
-            android:text="ذخیره"
-            android:layout_marginTop="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-</ScrollView>
+            <TextView
+                android:text="خانواده فونت"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <Spinner
+                android:id="@+id/spFamily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="مرتب‌سازی"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/btnSort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="زمان ساخت" />
+
+            <Button
+                android:id="@+id/btnSave"
+                android:text="ذخیره"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
