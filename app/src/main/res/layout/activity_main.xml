@@ -12,8 +12,50 @@
         android:elevation="4dp"
         app:title="دفترچه یادداشت" />
 
+    <LinearLayout
+        android:id="@+id/selectionBar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        android:padding="8dp"
+        android:gravity="end"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvSelected"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="0 انتخاب شده"/>
+
+        <ImageButton
+            android:id="@+id/btnSelectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_selectall"
+            android:contentDescription="انتخاب همه"/>
+
+        <ImageButton
+            android:id="@+id/btnShareSel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_share"
+            android:contentDescription="اشتراک"/>
+
+        <ImageButton
+            android:id="@+id/btnDeleteSel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_delete"
+            android:contentDescription="حذف"/>
+    </LinearLayout>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent" android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerNotes"
@@ -31,46 +73,5 @@
             android:layout_margin="16dp"
             app:layout_anchorGravity="bottom|end"
             app:layout_anchor="@id/recyclerNotes"/>
-
-        <LinearLayout
-            android:id="@+id/selectionBar"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="?attr/colorSurface"
-            android:padding="8dp"
-            android:gravity="end"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tvSelected"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:text="0 انتخاب شده"/>
-
-            <ImageButton
-                android:id="@+id/btnSelectAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_selectall"
-                android:contentDescription="انتخاب همه"/>
-
-            <ImageButton
-                android:id="@+id/btnShareSel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_share"
-                android:contentDescription="اشتراک"/>
-
-            <ImageButton
-                android:id="@+id/btnDeleteSel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_delete"
-                android:contentDescription="حذف"/>
-        </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>
