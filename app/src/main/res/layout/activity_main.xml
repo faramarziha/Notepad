@@ -7,14 +7,24 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
         android:elevation="4dp"
-        app:title="دفترچه یادداشت"
-        app:titleCentered="true" />
+        app:title="دفترچه یادداشت" />
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/selectionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/selection_bg"
+        app:menu="@menu/menu_selection"
+        android:visibility="gone" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent" android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerNotes"

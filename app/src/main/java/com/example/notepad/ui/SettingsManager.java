@@ -2,6 +2,9 @@ package com.example.notepad.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+
+import androidx.core.content.res.ResourcesCompat;
 
 public class SettingsManager {
     private static final String PREF = "note_prefs";
@@ -18,11 +21,22 @@ public class SettingsManager {
     }
 
     public static String getFontFamily(Context c){
-        return c.getSharedPreferences(PREF, Context.MODE_PRIVATE).getString(KEY_FONT_FAMILY, "sans"); // default
+        return c.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+                .getString(KEY_FONT_FAMILY, "iransansdn_fa_num");
     }
 
     public static void setFontFamily(Context c, String family){
         c.getSharedPreferences(PREF, Context.MODE_PRIVATE).edit().putString(KEY_FONT_FAMILY, family).apply();
+    }
+
+    public static Typeface getTypeface(Context c){
+        String fam = getFontFamily(c);
+        int id = c.getResources().getIdentifier(fam, "font", c.getPackageName());
+        Typeface tf = null;
+        if(id != 0){
+            tf = ResourcesCompat.getFont(c, id);
+        }
+        return tf != null ? tf : Typeface.DEFAULT;
     }
 
     public static String getSortMode(Context c){
