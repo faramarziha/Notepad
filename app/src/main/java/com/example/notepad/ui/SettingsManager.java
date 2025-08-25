@@ -10,7 +10,7 @@ public class SettingsManager {
     private static final String PREF = "note_prefs";
     private static final String KEY_FONT_SIZE = "font_size_sp";
     private static final String KEY_FONT_FAMILY = "font_family";
-    private static final String KEY_SORT_MODE = "sort_mode"; // "created" or "updated"
+    private static final String KEY_SORT_MODE = "sort_mode";
 
     public static int getFontSizeSp(Context c){
         return c.getSharedPreferences(PREF, Context.MODE_PRIVATE).getInt(KEY_FONT_SIZE, 16);
@@ -47,3 +47,5 @@ public class SettingsManager {
         c.getSharedPreferences(PREF, Context.MODE_PRIVATE).edit().putString(KEY_SORT_MODE, mode).apply();
     }
 }
+
+

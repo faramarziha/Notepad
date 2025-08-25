@@ -19,3 +19,5 @@ public class NoteRepository {
     public void delete(Note n){ AppDatabase.dbExecutor.execute(() -> dao.delete(n)); }
     public void deleteAll(){ AppDatabase.dbExecutor.execute(dao::deleteAll); }
 }
+
+

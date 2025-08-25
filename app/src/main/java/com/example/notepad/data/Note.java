@@ -11,11 +11,9 @@ public class Note {
     public String title;
     public String content;
 
-    // زمان ایجاد و آخرین ویرایش
     public long createdAt;
     public long updatedAt;
 
-    // رنگ پس‌زمینه یادداشت
     public int color;
 
     public Note() {}
@@ -28,3 +26,5 @@ public class Note {
         this.color = color;
     }
 }
+
+

@@ -19,3 +19,5 @@ public interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY updatedAt DESC")
     LiveData<List<Note>> getAllOrderByUpdated();
 }
+
+

@@ -152,3 +152,5 @@ public class AddEditNoteActivity extends AppCompatActivity {
         finish();
     }
 }
+
+

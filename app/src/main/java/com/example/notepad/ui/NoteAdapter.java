@@ -62,7 +62,6 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
                 : new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault()).format(new Date(note.createdAt));
         h.tvDate.setText(when);
 
-        // اعمال تنظیمات فونت
         int sp = SettingsManager.getFontSizeSp(ctx);
         h.tvTitle.setTextSize(sp + 2);
         h.tvContent.setTextSize(sp);
@@ -165,3 +164,5 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
 
     public Note getAt(int position){ return getItem(position); }
 }
+
+
