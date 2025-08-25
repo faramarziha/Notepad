@@ -10,17 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Material3.DayNight.NoActionBar">
 
-        <!-- صفحه تنظیمات فونت/مرتب‌سازی -->
         <activity
             android:name=".ui.SettingsActivity"
             android:exported="false" />
-
-        <!-- افزودن/ویرایش یادداشت -->
         <activity
             android:name=".ui.AddEditNoteActivity"
             android:exported="false" />
-
-        <!-- صفحه اصلی (لانچر) -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">
@@ -32,3 +27,4 @@
 
     </application>
 </manifest>
+

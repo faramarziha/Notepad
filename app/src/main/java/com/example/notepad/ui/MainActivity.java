@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // سوایپ برای حذف
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override public boolean onMove(RecyclerView r, RecyclerView.ViewHolder vH, RecyclerView.ViewHolder t) { return false; }
 
@@ -216,3 +215,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+
+

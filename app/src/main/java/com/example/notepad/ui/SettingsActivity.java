@@ -29,7 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
         Spinner spFamily = findViewById(R.id.spFamily);
         Button btnSave = findViewById(R.id.btnSave);
 
-        // init
         sb.setMax(30);
         sb.setProgress(SettingsManager.getFontSizeSp(this));
         tvPreview.setTextSize(sb.getProgress());
@@ -74,3 +73,5 @@ public class SettingsActivity extends AppCompatActivity {
         return true;
     }
 }
+
+

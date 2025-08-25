@@ -23,7 +23,6 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     "notes.db"
                             )
-                            // برای توسعه: با تغییر schema دیتابیس پاک و دوباره ساخته شود
                             .fallbackToDestructiveMigration()
                             .build();
                 }
@@ -32,3 +31,5 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 }
+
+
