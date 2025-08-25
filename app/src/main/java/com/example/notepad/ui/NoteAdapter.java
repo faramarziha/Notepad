@@ -131,7 +131,17 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.VH> {
 
     public boolean isSelectionMode(){ return selectionMode; }
 
-    public void selectAll() {
+    public int getSelectedCount() { return selected.size(); }
+
+    public boolean areAllSelected() {
+        return selectionMode && selected.size() == getItemCount() && getItemCount() > 0;
+    }
+
+    public void toggleSelectAll() {
+        if (areAllSelected()) {
+            clearSelection();
+            return;
+        }
         selectionMode = true;
         selected.clear();
         for (int i = 0; i < getItemCount(); i++) {

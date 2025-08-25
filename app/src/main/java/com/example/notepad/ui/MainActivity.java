@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.view.ActionMode;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,8 +30,52 @@ public class MainActivity extends AppCompatActivity {
     private NoteViewModel vm;
     private NoteAdapter adapter;
     private List<Note> allNotes = new ArrayList<>();
-    private LinearLayout selectionBar;
-    private TextView tvSelected;
+    private ActionMode actionMode;
+
+    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_selection, menu);
+            View bar = findViewById(androidx.appcompat.R.id.action_mode_bar);
+            if (bar != null) {
+                bar.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.selection_bg));
+            }
+            return true;
+        }
+
+        @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+
+        @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int id = item.getItemId();
+            if (id == R.id.action_delete_sel) {
+                for (Note n : adapter.getSelectedNotes()) { vm.delete(n); }
+                mode.finish();
+                return true;
+            } else if (id == R.id.action_share_sel) {
+                StringBuilder sb = new StringBuilder();
+                for (Note n : adapter.getSelectedNotes()) {
+                    sb.append(n.title).append("\n").append(n.content).append("\n\n");
+                }
+                Intent s = new Intent(Intent.ACTION_SEND);
+                s.setType("text/plain");
+                s.putExtra(Intent.EXTRA_TEXT, sb.toString().trim());
+                startActivity(Intent.createChooser(s, "اشتراک‌گذاری یادداشت‌ها"));
+                mode.finish();
+                return true;
+            } else if (id == R.id.action_select_all) {
+                adapter.toggleSelectAll();
+                if (adapter.isSelectionMode()) {
+                    mode.setTitle(adapter.getSelectedCount() + " انتخاب شده");
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override public void onDestroyActionMode(ActionMode mode) {
+            adapter.clearSelection();
+            actionMode = null;
+        }
+    };
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.recyclerNotes);
         FloatingActionButton fab = findViewById(R.id.fabAdd);
-        selectionBar = findViewById(R.id.selectionBar);
-        tvSelected = findViewById(R.id.tvSelected);
-        ImageButton btnDelete = findViewById(R.id.btnDeleteSel);
-        ImageButton btnShare = findViewById(R.id.btnShareSel);
-        ImageButton btnSelectAll = findViewById(R.id.btnSelectAll);
 
         adapter = new NoteAdapter(this);
         rv.setAdapter(adapter);
@@ -74,34 +112,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override public void onSelectionChanged(int count) {
                 if (count == 0) {
-                    selectionBar.setVisibility(View.GONE);
+                    if (actionMode != null) actionMode.finish();
                 } else {
-                    tvSelected.setText(count + " انتخاب شده");
-                    selectionBar.setVisibility(View.VISIBLE);
+                    if (actionMode == null) actionMode = startSupportActionMode(actionModeCallback);
+                    if (actionMode != null) actionMode.setTitle(count + " انتخاب شده");
                 }
             }
         });
-
-        btnDelete.setOnClickListener(v -> {
-            for (Note n : adapter.getSelectedNotes()) {
-                vm.delete(n);
-            }
-            adapter.clearSelection();
-        });
-
-        btnShare.setOnClickListener(v -> {
-            StringBuilder sb = new StringBuilder();
-            for (Note n : adapter.getSelectedNotes()) {
-                sb.append(n.title).append("\n").append(n.content).append("\n\n");
-            }
-            Intent s = new Intent(Intent.ACTION_SEND);
-            s.setType("text/plain");
-            s.putExtra(Intent.EXTRA_TEXT, sb.toString().trim());
-            startActivity(Intent.createChooser(s, "اشتراک‌گذاری یادداشت‌ها"));
-            adapter.clearSelection();
-        });
-
-        btnSelectAll.setOnClickListener(v -> adapter.selectAll());
 
         // سوایپ برای حذف
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
