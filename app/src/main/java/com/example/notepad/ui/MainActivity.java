@@ -11,8 +11,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.appcompat.view.ActionMode;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,25 +28,21 @@ public class MainActivity extends AppCompatActivity {
     private NoteViewModel vm;
     private NoteAdapter adapter;
     private List<Note> allNotes = new ArrayList<>();
-    private ActionMode actionMode;
+    private Toolbar selectionBar;
 
-    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
-        @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.menu_selection, menu);
-            View bar = findViewById(androidx.appcompat.R.id.action_mode_bar);
-            if (bar != null) {
-                bar.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.selection_bg));
-            }
-            return true;
-        }
+    @Override protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+        Toolbar tb = findViewById(R.id.toolbar);
+        setSupportActionBar(tb);
 
-        @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        selectionBar = findViewById(R.id.selectionBar);
+        selectionBar.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.action_delete_sel) {
                 for (Note n : adapter.getSelectedNotes()) { vm.delete(n); }
-                mode.finish();
+                adapter.clearSelection();
                 return true;
             } else if (id == R.id.action_share_sel) {
                 StringBuilder sb = new StringBuilder();
@@ -59,30 +53,17 @@ public class MainActivity extends AppCompatActivity {
                 s.setType("text/plain");
                 s.putExtra(Intent.EXTRA_TEXT, sb.toString().trim());
                 startActivity(Intent.createChooser(s, "اشتراک‌گذاری یادداشت‌ها"));
-                mode.finish();
+                adapter.clearSelection();
                 return true;
             } else if (id == R.id.action_select_all) {
                 adapter.toggleSelectAll();
                 if (adapter.isSelectionMode()) {
-                    mode.setTitle(adapter.getSelectedCount() + " انتخاب شده");
+                    selectionBar.setTitle(adapter.getSelectedCount() + " انتخاب شده");
                 }
                 return true;
             }
             return false;
-        }
-
-        @Override public void onDestroyActionMode(ActionMode mode) {
-            adapter.clearSelection();
-            actionMode = null;
-        }
-    };
-
-    @Override protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Toolbar tb = findViewById(R.id.toolbar);
-        setSupportActionBar(tb);
+        });
 
         RecyclerView rv = findViewById(R.id.recyclerNotes);
         FloatingActionButton fab = findViewById(R.id.fabAdd);
@@ -112,10 +93,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override public void onSelectionChanged(int count) {
                 if (count == 0) {
-                    if (actionMode != null) actionMode.finish();
+                    selectionBar.setVisibility(View.GONE);
+                    selectionBar.setTitle("");
                 } else {
-                    if (actionMode == null) actionMode = startSupportActionMode(actionModeCallback);
-                    if (actionMode != null) actionMode.setTitle(count + " انتخاب شده");
+                    selectionBar.setVisibility(View.VISIBLE);
+                    selectionBar.setTitle(count + " انتخاب شده");
                 }
             }
         });
@@ -206,5 +188,13 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         vm.setSortMode(SettingsManager.getSortMode(this));
         adapter.notifyDataSetChanged();
+    }
+
+    @Override public void onBackPressed() {
+        if (adapter != null && adapter.isSelectionMode()) {
+            adapter.clearSelection();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
