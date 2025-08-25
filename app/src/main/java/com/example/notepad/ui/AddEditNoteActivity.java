@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.notepad.R;
@@ -77,12 +78,19 @@ public class AddEditNoteActivity extends AppCompatActivity {
             save();
             return true;
         } else if (id == R.id.action_delete) {
-            if (editingId != -1) {
-                Note n = new Note(etTitle.getText().toString(), etContent.getText().toString(), createdAt, updatedAt, color);
-                n.id = editingId;
-                vm.delete(n);
-            }
-            finish();
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.confirm_delete_single))
+                    .setPositiveButton("بله", (d, w) -> {
+                        if (editingId != -1) {
+                            Note n = new Note(etTitle.getText().toString(), etContent.getText().toString(), createdAt, updatedAt, color);
+                            n.id = editingId;
+                            vm.delete(n);
+                        }
+                        Toast.makeText(this, getString(R.string.note_deleted), Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .setNegativeButton("خیر", null)
+                    .show();
             return true;
         } else if (id == R.id.action_share) {
             share();

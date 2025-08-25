@@ -2,4 +2,8 @@
     <string name="app_name">Notepad</string>
     <!-- Other strings -->
     <string name="add">Add</string>
+    <string name="confirm_delete_single">آیا مطمئنید که می‌خواهید این یادداشت حذف شود؟</string>
+    <string name="confirm_delete_multiple">آیا مطمئنید که می‌خواهید %1$d یادداشت حذف شود؟</string>
+    <string name="note_deleted">یادداشت حذف شد</string>
+    <string name="notes_deleted">%1$d یادداشت حذف شد</string>
 </resources>

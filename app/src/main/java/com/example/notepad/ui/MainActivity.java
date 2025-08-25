@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.notepad.R;
 import com.example.notepad.data.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,20 @@ public class MainActivity extends AppCompatActivity {
         selectionBar.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.action_delete_sel) {
-                for (Note n : adapter.getSelectedNotes()) { vm.delete(n); }
-                adapter.clearSelection();
+                int count = adapter.getSelectedCount();
+                String msg = count == 1 ? getString(R.string.confirm_delete_single)
+                        : getString(R.string.confirm_delete_multiple, count);
+                new AlertDialog.Builder(this)
+                        .setMessage(msg)
+                        .setPositiveButton("بله", (d, w) -> {
+                            for (Note n : adapter.getSelectedNotes()) { vm.delete(n); }
+                            adapter.clearSelection();
+                            String toast = count == 1 ? MainActivity.this.getString(R.string.note_deleted)
+                                    : MainActivity.this.getString(R.string.notes_deleted, count);
+                            Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("خیر", null)
+                        .show();
                 return true;
             } else if (id == R.id.action_share_sel) {
                 StringBuilder sb = new StringBuilder();
@@ -107,10 +118,17 @@ public class MainActivity extends AppCompatActivity {
             @Override public boolean onMove(RecyclerView r, RecyclerView.ViewHolder vH, RecyclerView.ViewHolder t) { return false; }
 
             @Override public void onSwiped(RecyclerView.ViewHolder vH, int dir) {
-                Note n = adapter.getAt(vH.getAdapterPosition());
-                vm.delete(n);
-                Snackbar.make(rv, "یادداشت حذف شد", Snackbar.LENGTH_LONG)
-                        .setAction("برگردان", v -> vm.insert(n)).show();
+                int pos = vH.getAdapterPosition();
+                Note n = adapter.getAt(pos);
+                adapter.notifyItemChanged(pos);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(MainActivity.this.getString(R.string.confirm_delete_single))
+                        .setPositiveButton("بله", (d, w) -> {
+                            vm.delete(n);
+                            Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.note_deleted), Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("خیر", null)
+                        .show();
             }
 
             @Override public boolean isItemViewSwipeEnabled() {
