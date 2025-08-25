@@ -33,8 +33,8 @@ public class SettingsActivity extends AppCompatActivity {
         sb.setProgress(SettingsManager.getFontSizeSp(this));
         tvPreview.setTextSize(sb.getProgress());
 
-        String[] labels = {"ایران‌سنس عدددار","تحریر بولد","ایران‌سنس بولد","انجمن سمی‌بولد","جوان","ایران یکان بولد"};
-        String[] families = {"iransansdn_fa_num","tahrir_bold","iransansdn_fanum_bold","anjoman_semibold","javan","iranyekan_bold"};
+        String[] labels = {"ایران‌سنس","تحریر بولد","ایران‌سنس بولد","انجمن سمی‌بولد","جوان","ایران یکان بولد"};
+        String[] families = {"iransansdn_fa_num","tahrir_bold","iransansdn_fanum_bold","anjoman_semibold","javan","iranyekanbold"};
         spFamily.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, labels));
         String curFamily = SettingsManager.getFontFamily(this);
         int sel = 0;
